@@ -125,14 +125,14 @@
               } 
             }
             self.map = map
-            self.url = "http://universalviewer.io/examples/uv/./uv.html#?manifest="+manifest
+            self.url = "https://universalviewer.io/examples/uv/./uv.html#?manifest="+manifest
           });
       },
       watch: {
         // 算出 getter 関数
         index: function () {
           // `this` は vm インスタンスを指します
-          this.url = "http://universalviewer.io/examples/uv/./uv.html#?manifest="+this.manifest+"&cv="+this.index
+          this.url = "https://universalviewer.io/examples/uv/./uv.html#?manifest="+this.manifest+"&cv="+this.index
         }
       }
 
