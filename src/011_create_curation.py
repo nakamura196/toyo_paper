@@ -36,10 +36,10 @@ rows = []
 rows.append(["dcterms:identifier", "dcterms:title", "class"])
 
 rows2 = []
-rows2.append(["dcterms:identifier", "dcterms:relation"])
+rows2.append(["dcterms:identifier", "dcterms:relation", "dcterms:source"])
 
 rows3 = []
-rows3.append(["dcterms:identifier", "url", "dcterms:title", "paper:light", "paper:zoom", "paper:depth"])
+rows3.append(["item_id", "url", "dcterms:title", "paper:light", "paper:zoom", "paper:depth"])
 
 for j in range(1, r_count):
 
@@ -50,6 +50,7 @@ for j in range(1, r_count):
     print(value)
 
     ids_arr = []
+    urls_arr = []
 
     for i in range(0, 5):
 
@@ -58,8 +59,9 @@ for j in range(1, r_count):
         rows.append(row)
 
         ids_arr.append(ids[df_item.iloc[j, 8 + i]])
+        urls_arr.append("https://nakamura196.github.io/toyo_paper/point/?manifest=https://diyhistory.org/toyo/toyo2/iiif/"+str(ids[df_item.iloc[j, 8 + i]])+"/manifest "+df_item.iloc[j, 7] + " " + "観察ポイント"+str(i+1))
 
-    row2 = [df_item.iloc[j, 2], "|".join(ids_arr)]
+    row2 = [df_item.iloc[j, 2], "|".join(ids_arr), "|".join(urls_arr)]
     rows2.append(row2)
 
 files = sorted(glob.glob("/Users/nakamurasatoru/OneDrive/酉蓮社画像201905-/中國古籍修復紙譜（上）/*/*/*/*.jpg"))
