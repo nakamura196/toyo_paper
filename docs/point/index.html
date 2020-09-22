@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+  <div id="app">
+    <v-app>
+      <v-app-bar color="white">
+        <v-toolbar-title>紙質分析データベース</v-toolbar-title>
+        <!--
+        <v-spacer></v-spacer>
+
+        <v-btn text href="https://diyhistory.org/toyo/toyo2/">
+          test
+        </v-btn>
+        -->
+      </v-app-bar>
+
+      <v-main>
+        <iframe :src="url" :key="url" width="100%" height="600" allowfullscreen frameborder="0"></iframe>
+        <v-container class="my-5">
+
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">照明</th>
+                  <th class="text-left">倍率</th>
+                  <th class="text-center" colspan="4">深度合成</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, key) in map" :key="key">
+                  <td>{{ item["照明"] }}</td>
+                  <td><a @click="index = item['倍数']">{{ key+"×" }}</a></td>
+                  <td v-for="(value, key2) in ['3D','3Dsca','3to2D', 'COMPO']" :key="key2">
+                    <template v-if="item[value]">
+                      <a @click="index = item[value]">{{value}}</a>
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+
+        </v-container>
+      </v-main>
+      <v-footer color="primary">
+        <span class="white--text text-center">東洋文庫 / Toyo Bunko</span>
+      </v-footer>
+    </v-app>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+  <script src="https://unpkg.com/vue-router@2.0.0/dist/vue-router.js"></script>
+  <script>
+    const router = new VueRouter({
+      mode: 'history',
+    })
+
+    new Vue({
+      router,
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          map: {},
+          url: "",
+          index : 0,
+          manifest: ""
+        }
+      },
+      created() {
+
+        const manifest = this.$route.query.manifest
+        this.manifest = manifest
+
+        var self = this;
+        axios
+          .get(manifest)
+          .then(function (res) {
+            const manifestData = res.data
+            const canvases = manifestData.sequences[0].canvases
+            const map = {}
+            for(let i = 0; i < canvases.length; i++){
+              const canvas = canvases[i]
+
+              let light = ""
+              let zoom = ""
+              let depth = ""
+
+              const label = canvas.label["@value"]
+              const labelSpl = label.split(" ")
+              light = labelSpl[0]
+              zoom = labelSpl[1]
+              if(labelSpl.length > 2){
+                depth = labelSpl[2]
+              }
+
+              if(zoom != ""){
+                const zoomInt = Number(zoom.replace("×", "x").split("x")[0])
+                if(!map[zoomInt]){
+                  map[zoomInt] = {
+                    "照明" : light,
+                  }
+                }
+
+                obj = map[zoomInt]
+                if(depth != ""){
+                  obj[depth] = i
+                } else {
+                  obj["倍数"] = i
+                }
+              } 
+            }
+            self.map = map
+            self.url = "http://universalviewer.io/examples/uv/./uv.html#?manifest="+manifest
+          });
+      },
+      watch: {
+        // 算出 getter 関数
+        index: function () {
+          // `this` は vm インスタンスを指します
+          this.url = "http://universalviewer.io/examples/uv/./uv.html#?manifest="+this.manifest+"&cv="+this.index
+        }
+      }
+
+
+    })
+  </script>
+</body>
+
+</html>
