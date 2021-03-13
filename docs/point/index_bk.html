@@ -21,11 +21,6 @@
           test
         </v-btn>
         -->
-        <v-spacer></v-spacer>
-
-        <v-btn text :href="seeAlso">
-          Omeka
-        </v-btn>
       </v-app-bar>
 
       <v-main>
@@ -83,8 +78,7 @@
           map: {},
           url: "",
           index : 0,
-          manifest: "",
-          seeAlso: ""
+          manifest: ""
         }
       },
       created() {
@@ -97,10 +91,6 @@
           .get(manifest)
           .then(function (res) {
             const manifestData = res.data
-
-            const oid = manifestData.seeAlso["@id"].split("/items/")[1]
-            self.seeAlso = "https://diyhistory.org/toyo/toyo3/s/paper/item/" + oid
-
             const canvases = manifestData.sequences[0].canvases
             const map = {}
             for(let i = 0; i < canvases.length; i++){
@@ -110,57 +100,6 @@
               let zoom = ""
               let depth = ""
 
-              const metadata = canvas.metadata
-              for(let i = 0; i < metadata.length; i++){
-                const obj = metadata[i]
-                const label = obj.label
-                const value = obj.value
-
-                if(label === "Extent"){
-                  zoom = Number(value)
-                  if(zoom < 500){
-                    light = "リング片射"
-                  } else {
-                    light = "リング照明"
-                  }
-                }
-              }
-
-              const label = canvas.label["@value"]
-
-              const types = ["COMPO", "3to2D", "3D"]
-
-              for(let j = 0; j < types.length; j++){
-                const type = types[j]
-
-                if(label.toLowerCase().includes(type.toLowerCase())){
-                  depth = type
-                  break
-                }
-              }
-
-              
-
-              if(zoom != ""){
-
-                const zoomInt = zoom
-
-                if(!map[zoomInt]){
-                  map[zoomInt] = {
-                    "照明" : light,
-                  }
-                }
-
-                obj = map[zoomInt]
-                if(depth != ""){
-                  obj[depth] = i
-                } else {
-                  obj["倍数"] = i
-                }
-
-              }
-              
-              /*
               const label = canvas.label["@value"]
               const labelSpl = label.split(" ")
               light = labelSpl[0]
@@ -184,7 +123,6 @@
                   obj["倍数"] = i
                 }
               } 
-              */
             }
             self.map = map
             self.url = "https://universalviewer.io/examples/uv/./uv.html#?manifest="+manifest

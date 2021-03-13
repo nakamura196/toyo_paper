@@ -1,0 +1,3 @@
+dcterms:title @ja,dcterms:identifier,dcterms:subject ^^uri,dcterms:relation ^^resource
+item a,a,http://example.org/aaa,
+item b,b,http://example.org/bbb,a
