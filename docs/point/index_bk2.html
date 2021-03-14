@@ -29,40 +29,33 @@
       </v-app-bar>
 
       <v-main>
+        <iframe :src="url" :key="url" width="100%" height="600" allowfullscreen frameborder="0"></iframe>
         <v-container class="my-5">
-        <v-row>
-          <v-col cols="12" sm="6">
-            <iframe :src="url" :key="url" width="100%" height="600" allowfullscreen frameborder="0"></iframe>
-          </v-col>
-          <v-col cols="12" sm="6">
-            
 
-              <v-simple-table>
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th class="text-left">照明</th>
-                      <th class="text-left">倍率</th>
-                      <th class="text-center" colspan="4">深度合成</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, key) in map" :key="key">
-                      <td>{{ item["照明"] }}</td>
-                      <td><a @click="index = item['倍数']">{{ key+"×" }}</a></td>
-                      <td v-for="(value, key2) in ['3D','3Dsca','3to2D', 'COMPO']" :key="key2">
-                        <template v-if="item[value]">
-                          <a @click="index = item[value]">{{value}}</a>
-                        </template>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
-          </v-col>
-        </v-row>
-      </v-container>
-        
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">照明</th>
+                  <th class="text-left">倍率</th>
+                  <th class="text-center" colspan="4">深度合成</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, key) in map" :key="key">
+                  <td>{{ item["照明"] }}</td>
+                  <td><a @click="index = item['倍数']">{{ key+"×" }}</a></td>
+                  <td v-for="(value, key2) in ['3D','3Dsca','3to2D', 'COMPO']" :key="key2">
+                    <template v-if="item[value]">
+                      <a @click="index = item[value]">{{value}}</a>
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+
+        </v-container>
       </v-main>
       <v-footer color="primary">
         <span class="white--text text-center">東洋文庫 / Toyo Bunko</span>
